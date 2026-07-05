@@ -1,1 +1,41 @@
-name:
+name: Artifact-Demo
+on:
+  push:
+    branches:
+      - main
+
+jobs: 
+  create-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: create a sample file
+        run: |
+          echo "Welcome to Artifact file" > sample.txt
+          echo "Artifact demo file by Prashant" >> sample.txt
+
+      - name: verify-file
+        run: |
+          ls -l 
+          cat sample.txt
+
+      - name: upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+            name: sample-artifact
+            path: sample.txt
+
+  download-file: 
+    needs: create-file
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+            name: sample-artifact
+
+      - name: Verify Download file     
+        run: |
+          ls -R
+          cat sample-artifact/sample.txt
